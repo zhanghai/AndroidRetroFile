@@ -6,6 +6,9 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
+group = GROUP
+version = VERSION_NAME
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier 'sources'
@@ -29,9 +32,6 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
-                groupId GROUP
-                artifactId project.name
-                version VERSION_NAME
                 packaging 'aar'
                 name project.name
                 description POM_DESCRIPTION
@@ -78,8 +78,5 @@ bintray {
         githubRepo = BINTRAY_GITHUB_REPO
         publicDownloadNumbers = true
         licenses = [BINTRAY_LICENSE]
-        version {
-            name = VERSION_NAME
-        }
     }
 }
