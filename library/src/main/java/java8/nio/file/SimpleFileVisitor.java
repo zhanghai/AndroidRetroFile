@@ -57,8 +57,8 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     public FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs)
         throws IOException
     {
-        Objects.requireNonNull(dir);
-        Objects.requireNonNull(attrs);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(attrs);
         return FileVisitResult.CONTINUE;
     }
 
@@ -72,8 +72,8 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     public FileVisitResult visitFile(T file, BasicFileAttributes attrs)
         throws IOException
     {
-        Objects.requireNonNull(file);
-        Objects.requireNonNull(attrs);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(file);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(attrs);
         return FileVisitResult.CONTINUE;
     }
 
@@ -87,7 +87,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     public FileVisitResult visitFileFailed(T file, IOException exc)
         throws IOException
     {
-        Objects.requireNonNull(file);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(file);
         throw exc;
     }
 
@@ -104,7 +104,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     public FileVisitResult postVisitDirectory(T dir, IOException exc)
         throws IOException
     {
-        Objects.requireNonNull(dir);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir);
         if (exc != null)
             throw exc;
         return FileVisitResult.CONTINUE;

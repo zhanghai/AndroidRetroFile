@@ -43,7 +43,7 @@ import java8.nio.channels.SeekableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
+import java8.nio.charset.StandardCharsets;
 import java8.nio.file.attribute.BasicFileAttributeView;
 import java8.nio.file.attribute.BasicFileAttributes;
 import java8.nio.file.attribute.DosFileAttributes;   // javadoc
@@ -849,7 +849,7 @@ public final class Files {
                                       FileAttribute<?>... attrs)
         throws IOException
     {
-        return TempFileHelper.createTempFile(Objects.requireNonNull(dir),
+        return TempFileHelper.createTempFile(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir),
                                              prefix, suffix, attrs);
     }
 
@@ -947,7 +947,7 @@ public final class Files {
                                            FileAttribute<?>... attrs)
         throws IOException
     {
-        return TempFileHelper.createTempDirectory(Objects.requireNonNull(dir),
+        return TempFileHelper.createTempDirectory(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir),
                                                   prefix, attrs);
     }
 
@@ -2673,7 +2673,7 @@ public final class Files {
                         throw new AssertionError("Should not get here");
                 }
 
-                if (Objects.requireNonNull(result) != FileVisitResult.CONTINUE) {
+                if (org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(result) != FileVisitResult.CONTINUE) {
                     if (result == FileVisitResult.TERMINATE) {
                         break;
                     } else if (result == FileVisitResult.SKIP_SIBLINGS) {
@@ -2958,7 +2958,7 @@ public final class Files {
         throws IOException
     {
         // ensure not null before opening file
-        Objects.requireNonNull(in);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(in);
 
         // check for REPLACE_EXISTING
         boolean replaceExisting = false;
@@ -3040,7 +3040,7 @@ public final class Files {
      */
     public static long copy(Path source, OutputStream out) throws IOException {
         // ensure not null before opening file
-        Objects.requireNonNull(out);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(out);
 
         try (InputStream in = newInputStream(source)) {
             return copy(in, out);
@@ -3264,7 +3264,7 @@ public final class Files {
         throws IOException
     {
         // ensure bytes is not null before opening file
-        Objects.requireNonNull(bytes);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(bytes);
 
         try (OutputStream out = Files.newOutputStream(path, options)) {
             int len = bytes.length;
@@ -3323,7 +3323,7 @@ public final class Files {
         throws IOException
     {
         // ensure lines is not null before opening file
-        Objects.requireNonNull(lines);
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(lines);
         CharsetEncoder encoder = cs.newEncoder();
         OutputStream out = newOutputStream(path, options);
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, encoder))) {

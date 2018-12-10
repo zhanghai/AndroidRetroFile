@@ -93,7 +93,7 @@ public final class FileTime
      * @return  a {@code FileTime} representing the given value
      */
     public static FileTime from(long value, TimeUnit unit) {
-        Objects.requireNonNull(unit, "unit");
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(unit, "unit");
         return new FileTime(value, unit, null);
     }
 
@@ -121,7 +121,7 @@ public final class FileTime
      * @since 1.8
      */
     public static FileTime from(Instant instant) {
-        Objects.requireNonNull(instant, "instant");
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(instant, "instant");
         return new FileTime(0, null, instant);
     }
 
@@ -139,7 +139,7 @@ public final class FileTime
      *          since the epoch (1970-01-01T00:00:00Z); can be negative
      */
     public long to(TimeUnit unit) {
-        Objects.requireNonNull(unit, "unit");
+        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(unit, "unit");
         if (this.unit != null) {
             return unit.convert(this.value, this.unit);
         } else {

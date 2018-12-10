@@ -14,7 +14,8 @@ cp -r "${SDK_JAVA_SOURCE_ROOT}/java/nio/file" "${LIBRARY_JAVA_SOURCE_ROOT}/java8
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
 -e 's/java\.nio\.file/java8.nio.file/g' \
 -e 's/java\.time/org.threeten.bp/g' \
--e 's/\bMath(\.floor(Div|Mod))/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
+-e 's/\bMath(\.floor(Div|Mod))\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
+-e 's/\bObjects(\.requireNonNull)\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
 -e 's/java(\.util\.(Spliterator|function|stream))/java9\1/g' \
 -e '/^\s*import(\s+static)?\s+sun\..+\s*;\s*$/d' \
 
@@ -253,6 +254,16 @@ find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print
 -e "s/java(\.nio\.channels\.(File|SeekableByte)Channel)/java8\1/g" \
 -e "/^\s*import\s+java\.nio\.channels\.\*\s*;\s*$/a\import java8.nio.channels.FileChannel;\nimport java8.nio.channels.SeekableByteChannel;"
 
+mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset"
+rm -rf "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset"
+mkdir "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset"
+cp "${SDK_JAVA_SOURCE_ROOT}/java/nio/charset/StandardCharsets.java" "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset/StandardCharsets.java"
+sed -Ei \
+-e "s/^(\s*package\s+)java(\.nio\.charset\s*;\s*)$/\1java8\2\n\nimport java.nio.charset.*;/" \
+"${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset/StandardCharsets.java"
+find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
+-e 's/\bjava(\.nio\.charset\.StandardCharsets)\b/java8\1/g'
+
 mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
 rm -rf "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
 mkdir "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
@@ -368,6 +379,21 @@ find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print
 -e "s/\b([A-Za-z][A-Za-z0-9_]*)\.lines\(\)/java8.io.BufferedReaders.lines(\1)/g"
 
 git apply <<EOF
+diff --git a/library/src/main/java/java8/nio/file/DirectoryIteratorException.java b/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
+index 7356794..fd0d53d 100644
+--- a/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
++++ b/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
+@@ -56,7 +56,9 @@ public final class DirectoryIteratorException
+      *          if the cause is {@code null}
+      */
+     public DirectoryIteratorException(IOException cause) {
+-        super(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(cause));
++        super(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(cause).toString());
++
++        initCause(cause);
+     }
+ 
+     /**
 diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java
 index 432f013..cfdaacb 100644
 --- a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java
