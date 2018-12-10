@@ -12,11 +12,11 @@ rm -rf "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file"
 cp -r "${SDK_JAVA_SOURCE_ROOT}/java/nio/file" "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file"
 
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
--e 's/java\.nio\.file/java8.nio.file/g' \
--e 's/java\.time/org.threeten.bp/g' \
+-e 's/\bjava\.nio\.file\b/java8.nio.file/g' \
+-e 's/\bjava\.time\b/org.threeten.bp/g' \
 -e 's/\bMath(\.floor(Div|Mod))\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
 -e 's/\bObjects(\.requireNonNull)\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
--e 's/java(\.util\.(Spliterator|function|stream))/java9\1/g' \
+-e 's/\bjava(\.util\.(Spliterators?|function|stream))\b/java9\1/g' \
 -e '/^\s*import(\s+static)?\s+sun\..+\s*;\s*$/d' \
 
 mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels"
@@ -25,7 +25,8 @@ mkdir "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels"
 cp "${SDK_JAVA_SOURCE_ROOT}/java/nio/channels/SeekableByteChannel.java" "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels/SeekableByteChannel.java"
 sed -Ei \
 -e "s/^(\s*package\s+)java(\.nio\.channels\s*;\s*)$/\1java8\2/" \
--e '/^\s*import\s+java.nio.ByteBuffer\s*;\s*$/a\import java.nio.channels.*;' "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels/SeekableByteChannel.java"
+-e '/^\s*import\s+java\.nio\.ByteBuffer\s*;\s*$/a\import java.nio.channels.*;' \
+"${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels/SeekableByteChannel.java"
 cat >"${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels/FileChannel.java" <<EOF
 /*
  * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
@@ -251,7 +252,7 @@ public abstract class FileChannel extends java.nio.channels.FileChannel {
 }
 EOF
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
--e "s/java(\.nio\.channels\.(File|SeekableByte)Channel)/java8\1/g" \
+-e "s/\bjava(\.nio\.channels\.(File|SeekableByte)Channel)\b/java8\1/g" \
 -e "/^\s*import\s+java\.nio\.channels\.\*\s*;\s*$/a\import java8.nio.channels.FileChannel;\nimport java8.nio.channels.SeekableByteChannel;"
 
 mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/charset"
@@ -270,7 +271,8 @@ mkdir "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
 cp "${SDK_JAVA_SOURCE_ROOT}/java/io/UncheckedIOException.java" "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/UncheckedIOException.java"
 sed -Ei \
 -e "s/^(\s*package\s+)java(\.io\s*;\s*)$/\1java8\2/" \
--e '/^\s*import\s+java.util.Objects\s*;\s*$/a\import java.io.*;' "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/UncheckedIOException.java"
+-e '/^\s*import\s+java\.util\.Objects\s*;\s*$/a\import java.io.*;' \
+"${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/UncheckedIOException.java"
 cat >"${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/BufferedReaders.java" <<EOF
 /*
  * Copyright (C) 2014 The Android Open Source Project
@@ -375,7 +377,7 @@ public class BufferedReaders {
 }
 EOF
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
--e 's/java(\.io\.UncheckedIOException)/java8\1/g' \
+-e 's/\bjava(\.io\.UncheckedIOException)\b/java8\1/g' \
 -e "s/\b([A-Za-z][A-Za-z0-9_]*)\.lines\(\)/java8.io.BufferedReaders.lines(\1)/g"
 
 git apply <<EOF
