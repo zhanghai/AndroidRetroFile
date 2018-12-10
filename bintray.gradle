@@ -29,6 +29,9 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
+                groupId GROUP
+                artifactId project.name
+                version VERSION_NAME
                 packaging 'aar'
                 name project.name
                 description POM_DESCRIPTION
