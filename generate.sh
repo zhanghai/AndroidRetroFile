@@ -381,10 +381,10 @@ find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print
 -e "s/\b([A-Za-z][A-Za-z0-9_]*)\.lines\(\)/java8.io.BufferedReaders.lines(\1)/g"
 
 git apply <<EOF
-diff --git a/library/src/main/java/java8/nio/file/DirectoryIteratorException.java b/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
+diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
 index 7356794..fd0d53d 100644
---- a/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
-+++ b/library/src/main/java/java8/nio/file/DirectoryIteratorException.java
+--- a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
++++ b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
 @@ -56,7 +56,9 @@ public final class DirectoryIteratorException
       *          if the cause is {@code null}
       */
