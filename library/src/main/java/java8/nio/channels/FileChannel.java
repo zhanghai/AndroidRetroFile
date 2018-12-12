@@ -36,7 +36,8 @@ import java8.nio.file.StandardOpenOption;
 import java8.nio.file.attribute.FileAttribute;
 import java8.nio.file.spi.FileSystemProvider;
 
-public abstract class FileChannel extends java.nio.channels.FileChannel {
+public abstract class FileChannel extends java.nio.channels.FileChannel
+        implements SeekableByteChannel {
 
     protected FileChannel() {}
 
