@@ -6,7 +6,7 @@ A backport of java.nio.file API (JSR 203) for Android.
 
 ```gradle
 dependencies {
-    implementation 'me.zhanghai.android.retrofile:library:1.1.0'
+    implementation 'me.zhanghai.android.retrofile:library:1.1.1'
 }
 ```
 
@@ -24,4 +24,4 @@ This backport uses [android-retrostreams](https://github.com/retrostreams/androi
 
 ## License
 
-[GNU General Public License, version 2, with the Classpath Exception](https://openjdk.java.net/legal/gplv2+ce.html)
+[GNU General Public License, version 2, with the Classpath Exception](LICENSE)
