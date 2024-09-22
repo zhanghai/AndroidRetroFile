@@ -35,7 +35,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java8.io.UncheckedIOException;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.channels.Channels;
 import java8.nio.channels.FileChannel;
@@ -71,11 +71,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java9.util.Spliterator;
-import java9.util.Spliterators;
-import java9.util.function.BiPredicate;
-import java9.util.stream.Stream;
-import java9.util.stream.StreamSupport;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.BiPredicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * This class consists exclusively of static methods that operate on files,
@@ -849,7 +849,7 @@ public final class Files {
                                       FileAttribute<?>... attrs)
         throws IOException
     {
-        return TempFileHelper.createTempFile(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir),
+        return TempFileHelper.createTempFile(Objects.requireNonNull(dir),
                                              prefix, suffix, attrs);
     }
 
@@ -947,7 +947,7 @@ public final class Files {
                                            FileAttribute<?>... attrs)
         throws IOException
     {
-        return TempFileHelper.createTempDirectory(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(dir),
+        return TempFileHelper.createTempDirectory(Objects.requireNonNull(dir),
                                                   prefix, attrs);
     }
 
@@ -2673,7 +2673,7 @@ public final class Files {
                         throw new AssertionError("Should not get here");
                 }
 
-                if (org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(result) != FileVisitResult.CONTINUE) {
+                if (Objects.requireNonNull(result) != FileVisitResult.CONTINUE) {
                     if (result == FileVisitResult.TERMINATE) {
                         break;
                     } else if (result == FileVisitResult.SKIP_SIBLINGS) {
@@ -2958,7 +2958,7 @@ public final class Files {
         throws IOException
     {
         // ensure not null before opening file
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(in);
+        Objects.requireNonNull(in);
 
         // check for REPLACE_EXISTING
         boolean replaceExisting = false;
@@ -3040,7 +3040,7 @@ public final class Files {
      */
     public static long copy(Path source, OutputStream out) throws IOException {
         // ensure not null before opening file
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(out);
+        Objects.requireNonNull(out);
 
         try (InputStream in = newInputStream(source)) {
             return copy(in, out);
@@ -3264,7 +3264,7 @@ public final class Files {
         throws IOException
     {
         // ensure bytes is not null before opening file
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(bytes);
+        Objects.requireNonNull(bytes);
 
         try (OutputStream out = Files.newOutputStream(path, options)) {
             int len = bytes.length;
@@ -3323,7 +3323,7 @@ public final class Files {
         throws IOException
     {
         // ensure lines is not null before opening file
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(lines);
+        Objects.requireNonNull(lines);
         CharsetEncoder encoder = cs.newEncoder();
         OutputStream out = newOutputStream(path, options);
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, encoder))) {
@@ -3614,7 +3614,7 @@ public final class Files {
      * {@link Path#resolve(Path) resolving} the relative path against {@code
      * start} and is only included in the returned {@link Stream} if
      * the {@code BiPredicate} returns true. Compare to calling {@link
-     * java9.util.stream.Stream#filter filter} on the {@code Stream}
+     * java.util.stream.Stream#filter filter} on the {@code Stream}
      * returned by {@code walk} method, this method may be more efficient by
      * avoiding redundant retrieval of the {@code BasicFileAttributes}.
      *
@@ -3687,7 +3687,7 @@ public final class Files {
      * occurs while reading from the file or when a malformed or unmappable byte
      * sequence is read, is wrapped in an {@link UncheckedIOException} that will
      * be thrown from the
-     * {@link java9.util.stream.Stream} method that caused the read to take
+     * {@link java.util.stream.Stream} method that caused the read to take
      * place. In case an {@code IOException} is thrown when closing the file,
      * it is also wrapped as an {@code UncheckedIOException}.
      *
@@ -3720,7 +3720,7 @@ public final class Files {
     public static Stream<String> lines(Path path, Charset cs) throws IOException {
         BufferedReader br = Files.newBufferedReader(path, cs);
         try {
-            return java8.io.BufferedReaders.lines(br).onClose(asUncheckedRunnable(br));
+            return br.lines().onClose(asUncheckedRunnable(br));
         } catch (Error|RuntimeException e) {
             try {
                 br.close();

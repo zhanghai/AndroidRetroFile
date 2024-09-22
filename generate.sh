@@ -3,7 +3,7 @@
 set -eu
 
 SDK_PATH="$(sed -En 's/^\s*sdk.dir=(.*)$/\1/p' local.properties)"
-SDK_VERSION="$(sed -En 's/^\s*compileSdkVersion\s+([0-9]+)\s*$/\1/p' library/build.gradle)"
+SDK_VERSION="$(sed -En 's/^\s*compileSdk\s+([0-9]+)\s*$/\1/p' library/build.gradle)"
 SDK_JAVA_SOURCE_ROOT="${SDK_PATH}/sources/android-${SDK_VERSION}"
 LIBRARY_JAVA_SOURCE_ROOT="library/src/main/java"
 
@@ -13,10 +13,6 @@ cp -r "${SDK_JAVA_SOURCE_ROOT}/java/nio/file" "${LIBRARY_JAVA_SOURCE_ROOT}/java8
 
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
 -e 's/\bjava\.nio\.file\b/java8.nio.file/g' \
--e 's/\bjava\.time\b/org.threeten.bp/g' \
--e 's/\bMath(\.floor(Div|Mod))\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
--e 's/\bObjects(\.requireNonNull)\b/org.threeten.bp.jdk8.Jdk8Methods\1/g' \
--e 's/\bjava(\.util\.(Spliterators?|function|stream))\b/java9\1/g' \
 -e '/^\s*import(\s+static)?\s+sun\..+\s*;\s*$/d' \
 
 mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/channels"
@@ -381,137 +377,7 @@ sed -Ei \
 find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
 -e 's/\bjava(\.nio\.charset\.StandardCharsets)\b/java8\1/g'
 
-mkdir -p "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
-rm -rf "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
-mkdir "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io"
-cp "${SDK_JAVA_SOURCE_ROOT}/java/io/UncheckedIOException.java" "${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/UncheckedIOException.java"
-sed -Ei \
--e "s/^(\s*package\s+)java(\.io\s*;\s*)$/\1java8\2/" \
--e '/^\s*import\s+java\.util\.Objects\s*;\s*$/a\import java.io.*;' \
-"${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/UncheckedIOException.java"
-cat >"${LIBRARY_JAVA_SOURCE_ROOT}/java8/io/BufferedReaders.java" <<EOF
-/*
- * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
- *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
- *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
- */
-
-package java8.io;
-
-import java.io.*;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java9.util.Spliterator;
-import java9.util.Spliterators;
-import java9.util.stream.Stream;
-import java9.util.stream.StreamSupport;
-
-public class BufferedReaders {
-
-    private BufferedReaders() {}
-
-    /**
-     * Returns a {@code Stream}, the elements of which are lines read from
-     * this {@code BufferedReader}.  The {@link Stream} is lazily populated,
-     * i.e., read only occurs during the
-     * <a href="../util/stream/package-summary.html#StreamOps">terminal
-     * stream operation</a>.
-     *
-     * <p> The reader must not be operated on during the execution of the
-     * terminal stream operation. Otherwise, the result of the terminal stream
-     * operation is undefined.
-     *
-     * <p> After execution of the terminal stream operation there are no
-     * guarantees that the reader will be at a specific position from which to
-     * read the next character or line.
-     *
-     * <p> If an {@link IOException} is thrown when accessing the underlying
-     * {@code BufferedReader}, it is wrapped in an {@link
-     * UncheckedIOException} which will be thrown from the {@code Stream}
-     * method that caused the read to take place. This method will return a
-     * Stream if invoked on a BufferedReader that is closed. Any operation on
-     * that stream that requires reading from the BufferedReader after it is
-     * closed, will cause an UncheckedIOException to be thrown.
-     *
-     * @return a {@code Stream<String>} providing the lines of text
-     *         described by this {@code BufferedReader}
-     *
-     * @since 1.8
-     */
-    public static Stream<String> lines(BufferedReader bufferedReader) {
-        Iterator<String> iter = new Iterator<String>() {
-            String nextLine = null;
-
-            @Override
-            public boolean hasNext() {
-                if (nextLine != null) {
-                    return true;
-                } else {
-                    try {
-                        nextLine = bufferedReader.readLine();
-                        return (nextLine != null);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                }
-            }
-
-            @Override
-            public String next() {
-                if (nextLine != null || hasNext()) {
-                    String line = nextLine;
-                    nextLine = null;
-                    return line;
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
-        };
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-                iter, Spliterator.ORDERED | Spliterator.NONNULL), false);
-    }
-}
-EOF
-find "${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file" -iname '*.java' -type f -print0 | xargs -0 sed -Ei \
--e 's/\bjava(\.io\.UncheckedIOException)\b/java8\1/g' \
--e "s/\b([A-Za-z][A-Za-z0-9_]*)\.lines\(\)/java8.io.BufferedReaders.lines(\1)/g"
-
 git apply <<EOF
-diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
-index 7356794..fd0d53d 100644
---- a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
-+++ b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/DirectoryIteratorException.java
-@@ -56,7 +56,9 @@ public final class DirectoryIteratorException
-      *          if the cause is {@code null}
-      */
-     public DirectoryIteratorException(IOException cause) {
--        super(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(cause));
-+        super(org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(cause).toString());
-+
-+        initCause(cause);
-     }
- 
-     /**
 diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java
 index 432f013..cfdaacb 100644
 --- a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/FileSystems.java
@@ -646,6 +512,19 @@ index 5ea48f2..cfb83a7 100644
  
      private static final boolean isPosix =
          FileSystems.getDefault().supportedFileAttributeViews().contains("posix");
+diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/attribute/PosixFilePermissions.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/attribute/PosixFilePermissions.java
+index b4c946a..05be1b0 100644
+--- a/library/src/main/java/java8/nio/file/attribute/PosixFilePermissions.java
++++ b/library/src/main/java/java8/nio/file/attribute/PosixFilePermissions.java
+@@ -166,7 +166,7 @@ public final class PosixFilePermissions {
+                 throw new NullPointerException();
+         }
+         final Set<PosixFilePermission> value = perms;
+-        return new FileAttribute<>() {
++        return new FileAttribute<Set<PosixFilePermission>>() {
+             @Override
+             public String name() {
+                 return "posix:permissions";
 diff --git a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/spi/FileSystemProvider.java b/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/spi/FileSystemProvider.java
 index 9fc2ff4..476aab8 100644
 --- a/${LIBRARY_JAVA_SOURCE_ROOT}/java8/nio/file/spi/FileSystemProvider.java

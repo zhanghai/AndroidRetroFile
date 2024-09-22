@@ -160,7 +160,7 @@ public final class PosixFilePermissions {
     {
         // copy set and check for nulls (CCE will be thrown if an element is not
         // a PosixFilePermission)
-        perms = new HashSet<PosixFilePermission>(perms);
+        perms = new HashSet<>(perms);
         for (PosixFilePermission p: perms) {
             if (p == null)
                 throw new NullPointerException();

@@ -25,9 +25,9 @@
 
 package java8.nio.file.attribute;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneOffset;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +93,7 @@ public final class FileTime
      * @return  a {@code FileTime} representing the given value
      */
     public static FileTime from(long value, TimeUnit unit) {
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(unit, "unit");
+        Objects.requireNonNull(unit, "unit");
         return new FileTime(value, unit, null);
     }
 
@@ -121,7 +121,7 @@ public final class FileTime
      * @since 1.8
      */
     public static FileTime from(Instant instant) {
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(instant, "instant");
+        Objects.requireNonNull(instant, "instant");
         return new FileTime(0, null, instant);
     }
 
@@ -139,7 +139,7 @@ public final class FileTime
      *          since the epoch (1970-01-01T00:00:00Z); can be negative
      */
     public long to(TimeUnit unit) {
-        org.threeten.bp.jdk8.Jdk8Methods.requireNonNull(unit, "unit");
+        Objects.requireNonNull(unit, "unit");
         if (this.unit != null) {
             return unit.convert(this.value, this.unit);
         } else {
@@ -248,18 +248,18 @@ public final class FileTime
                     secs = value;
                     break;
                 case MILLISECONDS:
-                    secs = org.threeten.bp.jdk8.Jdk8Methods.floorDiv(value, MILLIS_PER_SECOND);
-                    nanos = (int)org.threeten.bp.jdk8.Jdk8Methods.floorMod(value, MILLIS_PER_SECOND)
+                    secs = Math.floorDiv(value, MILLIS_PER_SECOND);
+                    nanos = (int)Math.floorMod(value, MILLIS_PER_SECOND)
                             * NANOS_PER_MILLI;
                     break;
                 case MICROSECONDS:
-                    secs = org.threeten.bp.jdk8.Jdk8Methods.floorDiv(value, MICROS_PER_SECOND);
-                    nanos = (int)org.threeten.bp.jdk8.Jdk8Methods.floorMod(value, MICROS_PER_SECOND)
+                    secs = Math.floorDiv(value, MICROS_PER_SECOND);
+                    nanos = (int)Math.floorMod(value, MICROS_PER_SECOND)
                             * NANOS_PER_MICRO;
                     break;
                 case NANOSECONDS:
-                    secs = org.threeten.bp.jdk8.Jdk8Methods.floorDiv(value, NANOS_PER_SECOND);
-                    nanos = (int)org.threeten.bp.jdk8.Jdk8Methods.floorMod(value, NANOS_PER_SECOND);
+                    secs = Math.floorDiv(value, NANOS_PER_SECOND);
+                    nanos = (int)Math.floorMod(value, NANOS_PER_SECOND);
                     break;
                 default : throw new AssertionError("Unit not handled");
             }
@@ -423,8 +423,8 @@ public final class FileTime
             if (secs >= -SECONDS_0000_TO_1970) {
                 // current era
                 long zeroSecs = secs - SECONDS_PER_10000_YEARS + SECONDS_0000_TO_1970;
-                long hi = org.threeten.bp.jdk8.Jdk8Methods.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
-                long lo = org.threeten.bp.jdk8.Jdk8Methods.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
+                long hi = Math.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
+                long lo = Math.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
                 ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, nanos, ZoneOffset.UTC);
                 year = ldt.getYear() +  (int)hi * 10000;
             } else {

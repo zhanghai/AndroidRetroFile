@@ -20,7 +20,7 @@ Before using the API, you need to set a default provider implementation with `Fi
 
 Similarly, there is no default [`FileTypeDetector`](blob/master/library/src/main/java/java8/nio/file/spi/FileTypeDetector.java) implementation, and you can install one with `Files.installFileTypeDetector()` at any time.
 
-This backport uses [android-retrostreams](https://github.com/retrostreams/android-retrostreams) for `java.util.stream` and [ThreeTenABP](https://github.com/JakeWharton/ThreeTenABP) for `java.time`, and they are exposed as an API dependency of this library.
+This backport uses the [default version](https://developer.android.com/studio/write/java11-default-support-table) of [Java 8+ API desugaring support](https://developer.android.com/studio/write/java8-support) for `java.util.stream` and `java.time`.
 
 ## License
 
