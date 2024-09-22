@@ -6,7 +6,7 @@ A backport of java.nio.file API (JSR 203) for Android.
 
 ```gradle
 dependencies {
-    implementation 'me.zhanghai.android.retrofile:library:1.1.1'
+    implementation 'me.zhanghai.android.retrofile:library:1.2.0'
 }
 ```
 
